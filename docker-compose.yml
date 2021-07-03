@@ -48,3 +48,26 @@ services:
       - ./redis:/var/lib/redis
     networks:
       - backend
+
+  nginx:
+    image: jhonoryza/nginx:laravel-alpine
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf/:/etc/nginx/conf.d/
+      - ./nginx/sample/index.html:/var/www/html/index.html
+      - ~/Documents/www:/var/www
+    networks:
+      - backend
+
+  php74:
+    image: jhonoryza/php:ubuntu-7.4-composer-2
+    container_name: php74
+    restart: always
+    working_dir: /var/www
+    volumes:
+      - ~/Documents/www:/var/www
+    networks:
+      - backend
