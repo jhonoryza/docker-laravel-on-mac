@@ -5,36 +5,55 @@ networks:
 
 services:
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
-    environment:
-      - PMA_HOST=mysql
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=secret
-    ports:
-      - "8000:80"
-    restart: always
-    depends_on: 
-      - mysql
-    networks:
-      - backend
+  #phpmyadmin:
+  #  image: phpmyadmin/phpmyadmin
+  #  container_name: phpmyadmin
+  #  environment:
+  #    - PMA_HOST=mysql
+  #    - MYSQL_USER=root
+  #    - MYSQL_PASSWORD=secret
+  #  ports:
+  #    - "8000:80"
+  #  restart: always
+  #  depends_on: 
+  #    - mysql
+  #  networks:
+  #    - backend
+
+  # mysql:
+  #   image: mysql:5.7.29
+  #   container_name: mysql
+  #   restart: always
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - ./mysql:/var/lib/mysql
+  #   environment:
+  #     MYSQL_DATABASE: homestead
+  #     MYSQL_USER: homestead
+  #     MYSQL_PASSWORD: secret
+  #     MYSQL_ROOT_PASSWORD: secret
+  #     SERVICE_TAGS: dev
+  #     SERVICE_NAME: mysql
+  #   networks:
+  #     - backend
 
   mysql:
-    image: mysql:5.7.29
     container_name: mysql
     restart: always
+    build:
+      context: ./mysql-config
+    image: "jhonoryza/mysql:8.0.0"
+    environment:
+      - MYSQL_DATABASE=homestead
+      - MYSQL_USER=homestead
+      - MYSQL_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=secret
+    volumes:
+      - ./mysql8-data:/var/lib/mysql
+      #- ./mysql-config/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
-    volumes:
-      - ./mysql:/var/lib/mysql
-    environment:
-      MYSQL_DATABASE: homestead
-      MYSQL_USER: homestead
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: secret
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
     networks:
       - backend
 
@@ -56,9 +75,9 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./nginx/conf/:/etc/nginx/conf.d/
-      - ./nginx/sample/index.html:/var/www/html/index.html
-      - ~/Documents/www:/var/www
+      - ./nginx/conf/:/etc/nginx/conf.d/:cached
+      - ./nginx/sample/index.html:/var/www/html/index.html:cached
+      - ~/Documents/www:/var/www:delegated
     networks:
       - backend
 
@@ -67,7 +86,11 @@ services:
     container_name: php74
     restart: always
     working_dir: /var/www
+    extra_hosts:
+      - "mansek.test:172.18.0.4"
+      - "tracey.test:172.18.0.4"
     volumes:
-      - ~/Documents/www:/var/www
+      - ~/Documents/www:/var/www:delegated
+      - ~/.composer/docker-cache/:/root/.composer:cached
     networks:
       - backend

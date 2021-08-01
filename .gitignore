@@ -1,2 +1,5 @@
 mysql/
+mysql8-data/
+mysql8/
 redis/
+nginx/conf/*.conf
