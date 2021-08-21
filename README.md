@@ -5,5 +5,4 @@
 - just add your new application folder to '~/Documents/www'
 
 #### application default folder
-by default it is using bind volume, it will sync from:
-'~/Documents/www' to nginx/php container in '/var/www'
+- by default it is using bind volume, it will sync from path: '~/Documents/www' to nginx/php container in '/var/www'
