@@ -80,6 +80,16 @@ services:
       - ~/Documents/www:/var/www:delegated
     networks:
       - backend
+  
+  node14:
+    image: node:14.17.5-alpine
+    container_name: node14
+    restart: always
+    tty: true
+    volumes:
+      - ~/Documents/GitHub:/app:delegated
+    ports:
+      - "3000:3000"    
 
   php74:
     image: jhonoryza/php:ubuntu-7.4-composer-2
